@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "823698311055",
+    "project_id": "spenzo-ma",
+    "storage_bucket": "spenzo-ma.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823698311055:android:5c6aeaa6a82ac5c4d4adfa",
+        "android_client_info": {
+          "package_name": "com.example.spenzo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhd1qN53l9b0bh-I3BWxOnsVnv2N39fY8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
