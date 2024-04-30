@@ -10,4 +10,9 @@
         android:name="com.example.spenzo.presentation.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/addTransactionFragment2"
+        android:name="com.example.spenzo.presentation.fragment.AddTransactionFragment"
+        android:label="fragment_add_transaction"
+        tools:layout="@layout/fragment_add_transaction" />
 </navigation>

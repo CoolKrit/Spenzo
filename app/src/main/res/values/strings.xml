@@ -16,4 +16,24 @@
     <string name="hi_user">Hi, User!</string>
     <string name="search">Search</string>
     <string name="there_are_no_transactions">There are no transactions</string>
+
+    <string-array name="spinner_transactionCategories">
+        <item>All</item>
+        <item>Housing</item>
+        <item>Transportation</item>
+        <item>Food</item>
+        <item>Utilities</item>
+        <item>Insurance</item>
+        <item>Healthcare</item>
+        <item>Saving &amp; Debts</item>
+        <item>Personal Spending</item>
+        <item>Entertainment</item>
+        <item>Miscellaneous</item>
+    </string-array>
+
+    <string-array name="spinner_transactionTypes">
+        <item>All</item>
+        <item>Expense</item>
+        <item>Income</item>
+    </string-array>
 </resources>

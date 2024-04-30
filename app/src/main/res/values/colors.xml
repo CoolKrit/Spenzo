@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="income">#6FCF97</color>
+    <color name="expense">#EB5757</color>
 </resources>

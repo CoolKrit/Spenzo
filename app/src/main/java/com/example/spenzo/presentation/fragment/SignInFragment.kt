@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.spenzo.R
 import com.example.spenzo.databinding.FragmentSignInBinding
-import com.example.spenzo.domain.SignInListener
+import com.example.spenzo.domain.listener.SignInListener
 import com.example.spenzo.presentation.activity.MainActivity
 import com.example.spenzo.presentation.viewmodel.SignInUpViewModel
 
@@ -98,8 +98,7 @@ class SignInFragment : Fragment(), SignInListener {
     }
 
     override fun onSignInSuccess() {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(requireActivity(), MainActivity::class.java))
     }
 
     override fun onSignInFailure(errorMessage: String) {

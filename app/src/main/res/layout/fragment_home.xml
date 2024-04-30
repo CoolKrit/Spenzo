@@ -24,7 +24,7 @@
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
             app:queryHint="@string/search" />
@@ -52,6 +52,7 @@
                 android:id="@+id/categorySpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/spinner_transactionCategories"
                 android:spinnerMode="dropdown" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -67,6 +68,7 @@
                 android:id="@+id/typeSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/spinner_transactionTypes"
                 android:spinnerMode="dropdown" />
 
         </com.google.android.material.card.MaterialCardView>
