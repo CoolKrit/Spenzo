@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_outline_account_balance_wallet_24"
+        android:title="@string/menu_home" />
+    <item
+        android:id="@+id/addTransactionFragment"
+        android:icon="@drawable/ic_outline_add_circle_24"
+        android:title="@string/menu_add" />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/ic_outline_profile_24"
+        android:title="@string/menu_profile" />
+</menu>

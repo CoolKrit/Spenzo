@@ -53,6 +53,8 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     // SplashScreen
     implementation(libs.androidx.core.splashscreen)
+    // Lottie
+    implementation(libs.lottie)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
