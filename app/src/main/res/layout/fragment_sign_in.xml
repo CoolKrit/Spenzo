@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".presentation.fragment.SignInFragment">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/sign_in"
+        android:src="@drawable/logo_sign_in" />
+
+    <TextView
+        style="@style/LargeTextView"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="0"
+        android:text="@string/sign_in" />
+
+    <include
+        android:id="@+id/emailInputLayout"
+        layout="@layout/email_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <include
+        android:id="@+id/passwordInputLayout"
+        layout="@layout/password_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        style="@style/SmallTextView"
+        android:layout_gravity="end"
+        android:layout_weight="1"
+        android:text="@string/forgot_password" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/signInButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_in"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:id="@+id/signUpTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/SmallTextView"
+            android:layout_gravity="center"
+            android:text="@string/don_t_have_an_account" />
+
+        <TextView
+            style="@style/SmallTextView"
+            android:layout_gravity="center"
+            android:text="@string/sign_up"
+            android:textColor="?attr/colorPrimary" />
+
+    </LinearLayout>
+
+</LinearLayout>
