@@ -11,9 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.spenzo.R
 import com.example.spenzo.databinding.FragmentSignInBinding
-import com.example.spenzo.domain.SignInListener
+import com.example.spenzo.domain.listener.SignInListener
 import com.example.spenzo.presentation.activity.MainActivity
 import com.example.spenzo.presentation.viewmodel.SignInUpViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class SignInFragment : Fragment(), SignInListener {
     private var _binding: FragmentSignInBinding? = null
@@ -54,6 +55,11 @@ class SignInFragment : Fragment(), SignInListener {
 
     override fun onStart() {
         super.onStart()
+
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            onSignInSuccess()
+        }
     }
 
     override fun onResume() {
@@ -98,8 +104,7 @@ class SignInFragment : Fragment(), SignInListener {
     }
 
     override fun onSignInSuccess() {
-        val intent = Intent(requireContext(), MainActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(requireActivity(), MainActivity::class.java))
     }
 
     override fun onSignInFailure(errorMessage: String) {

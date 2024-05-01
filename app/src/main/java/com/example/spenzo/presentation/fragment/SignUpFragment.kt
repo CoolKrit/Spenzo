@@ -9,10 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.spenzo.R
 import com.example.spenzo.databinding.FragmentSignUpBinding
-import com.example.spenzo.domain.SignInListener
-import com.example.spenzo.domain.SignUpListener
+import com.example.spenzo.domain.listener.SignUpListener
 import com.example.spenzo.presentation.viewmodel.SignInUpViewModel
 
 class SignUpFragment : Fragment(), SignUpListener {
