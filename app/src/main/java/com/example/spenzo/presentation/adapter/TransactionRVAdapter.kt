@@ -15,8 +15,8 @@ import com.example.spenzo.databinding.TransactionItemBinding
 class TransactionRVAdapter(private val items: List<Transaction>) : RecyclerView.Adapter<TransactionRVAdapter.ItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item, parent, false)
-        return ItemViewHolder(view)
+        val binding = TransactionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -28,13 +28,36 @@ class TransactionRVAdapter(private val items: List<Transaction>) : RecyclerView.
         return items.size
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val nameTextView: TextView = itemView.findViewById(R.id.transactionTitle)
-        private val amountTextView: TextView = itemView.findViewById(R.id.transactionAmount)
-
+    class ItemViewHolder(private val binding: TransactionItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Transaction) {
-            nameTextView.text = item.title
-            amountTextView.text = item.amount.toString()
+            binding.transactionTitle.text = item.title
+            binding.transactionCategory.text = item.category
+
+            when (item.type) {
+                "Income" -> {
+                    binding.transactionAmount.setTextColor(
+                        ContextCompat.getColor(
+                            binding.transactionAmount.context,
+                            R.color.income
+                        )
+                    )
+
+                    binding.transactionAmount.text =
+                        "+".plus(item.amount)
+                }
+
+                "Expense" -> {
+                    binding.transactionAmount.setTextColor(
+                        ContextCompat.getColor(
+                            binding.transactionAmount.context,
+                            R.color.expense
+                        )
+                    )
+
+                    binding.transactionAmount.text =
+                        "-".plus(item.amount)
+                }
+            }
         }
     }
 }

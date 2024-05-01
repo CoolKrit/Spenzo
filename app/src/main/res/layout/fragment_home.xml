@@ -52,8 +52,7 @@
                 android:id="@+id/categorySpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/spinner_transactionCategories"
-                android:spinnerMode="dropdown" />
+                android:popupBackground="?attr/colorSurfaceContainer" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -62,14 +61,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="?attr/colorSurfaceContainer"
+            app:cardCornerRadius="24dp"
             app:strokeWidth="0dp">
 
             <Spinner
                 android:id="@+id/typeSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/spinner_transactionTypes"
-                android:spinnerMode="dropdown" />
+                android:popupBackground="?attr/colorSurfaceContainer" />
 
         </com.google.android.material.card.MaterialCardView>
 

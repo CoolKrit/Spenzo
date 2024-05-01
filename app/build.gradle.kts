@@ -55,8 +55,11 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     // Lottie
     implementation(libs.lottie)
+    // Gson
+    implementation("com.google.code.gson:gson:2.8.5")
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.androidx.room.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

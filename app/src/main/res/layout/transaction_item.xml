@@ -57,7 +57,7 @@
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/lexend_bold"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="@color/m3_ref_palette_error40"
+            android:textColor="@color/income"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

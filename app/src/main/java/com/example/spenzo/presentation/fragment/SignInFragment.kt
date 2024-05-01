@@ -14,6 +14,7 @@ import com.example.spenzo.databinding.FragmentSignInBinding
 import com.example.spenzo.domain.listener.SignInListener
 import com.example.spenzo.presentation.activity.MainActivity
 import com.example.spenzo.presentation.viewmodel.SignInUpViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class SignInFragment : Fragment(), SignInListener {
     private var _binding: FragmentSignInBinding? = null
@@ -54,6 +55,11 @@ class SignInFragment : Fragment(), SignInListener {
 
     override fun onStart() {
         super.onStart()
+
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            onSignInSuccess()
+        }
     }
 
     override fun onResume() {

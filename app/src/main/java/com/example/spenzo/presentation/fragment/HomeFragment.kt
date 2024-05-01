@@ -1,5 +1,8 @@
 package com.example.spenzo.presentation.fragment
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,11 +10,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import androidx.annotation.ArrayRes
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.spenzo.R
+import com.example.spenzo.data.model.Transaction
 import com.example.spenzo.databinding.FragmentHomeBinding
 import com.example.spenzo.presentation.adapter.TransactionRVAdapter
 import com.example.spenzo.presentation.viewmodel.TransactionViewModel
+import com.example.spenzo.presentation.viewmodel.TransactionViewModelFactory
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -34,17 +43,10 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        transactionRVAdapter = TransactionRVAdapter(emptyList())
-        binding.transactionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.transactionRecyclerView.adapter = transactionRVAdapter
-
-        transactionViewModel = ViewModelProvider(this)[TransactionViewModel::class.java]
-        observeViewModel()
-
+        setupRecyclerView()
+        setupViewModel()
+        setupSpinners()
         setupSearchView()
-        setupCategorySpinner()
-        setupTypeSpinner()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -80,20 +82,23 @@ class HomeFragment : Fragment() {
         super.onDestroy()
     }
 
-    private fun observeViewModel() {
-        loadItems("", null, null)
+    private fun setupRecyclerView() {
+        binding.transactionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        transactionRVAdapter = TransactionRVAdapter(emptyList())
+        binding.transactionRecyclerView.adapter = transactionRVAdapter
+        binding.transactionRecyclerView.setHasFixedSize(true)
     }
 
-    private fun loadItems(query: String, category: String?, type: String?) {
-        transactionViewModel.getItems(query, category, type,
-            onSuccess = { items ->
-                transactionRVAdapter = TransactionRVAdapter(items)
-                binding.transactionRecyclerView.adapter = transactionRVAdapter
-            },
-            onError = { exception ->
-                // Обработка ошибки
-            }
-        )
+    private fun setupViewModel() {
+        transactionViewModel = ViewModelProvider(
+            this,
+            TransactionViewModelFactory(requireContext())
+        )[TransactionViewModel::class.java]
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        loadItems("", null, null)
     }
 
     private fun setupSearchView() {
@@ -104,64 +109,99 @@ class HomeFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val category =
-                    if (binding.categorySpinner.selectedItem as String? == "All") null else binding.categorySpinner.selectedItem as String?
-                val type =
-                    if (binding.typeSpinner.selectedItem as String? == "All") null else binding.typeSpinner.selectedItem as String?
-                loadItems(newText.orEmpty(), category, type)
+                loadItemsFromSpinnersAndSearchView()
                 return true
             }
         })
     }
 
-    private fun setupCategorySpinner() {
-        binding.categorySpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long,
-                ) {
-                    val category =
-                        if (parent?.getItemAtPosition(position) as String? == "All") null else parent?.getItemAtPosition(
-                            position
-                        ) as String?
-                    val type =
-                        if (binding.typeSpinner.selectedItem as String? == "All") null else binding.typeSpinner.selectedItem as String?
-                    loadItems(binding.searchView.query.toString(), category, type)
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    val type =
-                        if (binding.typeSpinner.selectedItem as String? == "All") null else binding.typeSpinner.selectedItem as String?
-                    loadItems(binding.searchView.query.toString(), null, type)
-                }
-            }
+    private fun setupSpinners() {
+        setupSpinner(
+            binding.categorySpinner,
+            R.array.spinner_transactionCategories
+        ) { loadItemsFromSpinnersAndSearchView() }
+        setupSpinner(
+            binding.typeSpinner,
+            R.array.spinner_transactionTypes
+        ) { loadItemsFromSpinnersAndSearchView() }
     }
 
-    private fun setupTypeSpinner() {
-        binding.typeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+    private fun setupSpinner(
+        spinner: Spinner,
+        @ArrayRes itemsArrayRes: Int,
+        onItemSelectedListener: (String?) -> Unit,
+    ) {
+        val adapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            itemsArrayRes,
+            R.layout.spinner_item_layout
+        )
+        adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long,
             ) {
-                val category =
-                    if (binding.categorySpinner.selectedItem as String? == "All") null else binding.categorySpinner.selectedItem as String?
-                val type =
-                    if (parent?.getItemAtPosition(position) as String? == "All") null else parent?.getItemAtPosition(
-                        position
-                    ) as String?
-                loadItems(binding.searchView.query.toString(), category, type)
+                onItemSelectedListener(parent?.getItemAtPosition(position) as? String)
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                val category =
-                    if (binding.categorySpinner.selectedItem as String? == "All") null else binding.categorySpinner.selectedItem as String?
-                loadItems(binding.searchView.query.toString(), category, null)
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun loadItemsFromSpinnersAndSearchView() {
+        val category =
+            if (binding.categorySpinner.selectedItem as? String == "All") null else binding.categorySpinner.selectedItem as? String
+        val type =
+            if (binding.typeSpinner.selectedItem as? String == "All") null else binding.typeSpinner.selectedItem as? String
+        val query = binding.searchView.query.toString()
+
+        if (isOnline(requireContext())) {
+            loadItems(query, category, type)
+        } else {
+            val filteredItems = transactionViewModel.loadItemsLocally(query, category, type)
+            updateRecyclerView(filteredItems)
+        }
+    }
+
+    private fun loadItems(query: String, category: String?, type: String?) {
+        transactionViewModel.getItems(query, category, type,
+            onSuccess = { items ->
+                updateRecyclerView(items)
+            },
+            onError = { exception ->
+                // Обработка ошибки
+            }
+        )
+    }
+
+    private fun updateRecyclerView(items: List<Transaction>) {
+        if (items.isEmpty()) binding.emptyStateLayout.visibility =
+            View.VISIBLE else binding.emptyStateLayout.visibility = View.GONE
+        transactionRVAdapter = TransactionRVAdapter(items)
+        binding.transactionRecyclerView.adapter = transactionRVAdapter
+    }
+
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
             }
         }
+        return false
     }
 }
