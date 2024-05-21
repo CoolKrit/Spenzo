@@ -4,8 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,25 +11,25 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.annotation.ArrayRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.spenzo.R
 import com.example.spenzo.data.model.Transaction
 import com.example.spenzo.databinding.FragmentHomeBinding
-import com.example.spenzo.presentation.adapter.TransactionRVAdapter
+import com.example.spenzo.presentation.adapter.TransactionAdapter
 import com.example.spenzo.presentation.viewmodel.TransactionViewModel
 import com.example.spenzo.presentation.viewmodel.TransactionViewModelFactory
 
 class HomeFragment : Fragment() {
+
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var transactionViewModel: TransactionViewModel
-    private lateinit var transactionRVAdapter: TransactionRVAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var transactionAdapter: TransactionAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,34 +41,12 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupRecyclerView()
-        setupViewModel()
+        setupObservers()
         setupSpinners()
         setupSearchView()
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+        setupClearDatabaseButton()
     }
 
     override fun onDestroyView() {
@@ -78,27 +54,25 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     private fun setupRecyclerView() {
-        binding.transactionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        transactionRVAdapter = TransactionRVAdapter(emptyList())
-        binding.transactionRecyclerView.adapter = transactionRVAdapter
-        binding.transactionRecyclerView.setHasFixedSize(true)
+        transactionAdapter = TransactionAdapter{ transaction ->
+            val action = HomeFragmentDirections.actionHomeFragmentToTransactionDetailsFragment(transaction)
+            findNavController().navigate(action)
+        }
+        binding.transactionRecyclerView.apply {
+            adapter = transactionAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
-    private fun setupViewModel() {
+    private fun setupObservers() {
         transactionViewModel = ViewModelProvider(
             this,
-            TransactionViewModelFactory(requireContext())
+            TransactionViewModelFactory(requireActivity().application)
         )[TransactionViewModel::class.java]
-        observeViewModel()
-    }
-
-    private fun observeViewModel() {
-        loadItems("", null, null)
+        transactionViewModel.transactions.observe(viewLifecycleOwner) { items ->
+            updateRecyclerView(items)
+        }
     }
 
     private fun setupSearchView() {
@@ -116,36 +90,28 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSpinners() {
-        setupSpinner(
-            binding.categorySpinner,
-            R.array.spinner_transactionCategories
-        ) { loadItemsFromSpinnersAndSearchView() }
-        setupSpinner(
-            binding.typeSpinner,
-            R.array.spinner_transactionTypes
-        ) { loadItemsFromSpinnersAndSearchView() }
+        setupSpinner(binding.categorySpinner, R.array.spinner_transactionCategories)
+        setupSpinner(binding.typeSpinner, R.array.spinner_transactionTypes)
     }
 
-    private fun setupSpinner(
-        spinner: Spinner,
-        @ArrayRes itemsArrayRes: Int,
-        onItemSelectedListener: (String?) -> Unit,
-    ) {
-        val adapter = ArrayAdapter.createFromResource(
+    private fun setupSpinner(spinner: Spinner, @ArrayRes itemsArrayRes: Int) {
+        ArrayAdapter.createFromResource(
             requireContext(),
             itemsArrayRes,
-            R.layout.spinner_item_layout
-        )
-        adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+            R.layout.item_spinner_layout
+        ).also { adapter ->
+            adapter.setDropDownViewResource(com.google.android.material.R.layout.support_simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long,
+                id: Long
             ) {
-                onItemSelectedListener(parent?.getItemAtPosition(position) as? String)
+                loadItemsFromSpinnersAndSearchView()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -159,49 +125,25 @@ class HomeFragment : Fragment() {
             if (binding.typeSpinner.selectedItem as? String == "All") null else binding.typeSpinner.selectedItem as? String
         val query = binding.searchView.query.toString()
 
-        if (isOnline(requireContext())) {
-            loadItems(query, category, type)
-        } else {
-            val filteredItems = transactionViewModel.loadItemsLocally(query, category, type)
-            updateRecyclerView(filteredItems)
-        }
-    }
-
-    private fun loadItems(query: String, category: String?, type: String?) {
-        transactionViewModel.getItems(query, category, type,
-            onSuccess = { items ->
-                updateRecyclerView(items)
-            },
-            onError = { exception ->
-                // Обработка ошибки
-            }
-        )
+        transactionViewModel.loadItems(query, category, type, isOnline(requireContext()))
     }
 
     private fun updateRecyclerView(items: List<Transaction>) {
-        if (items.isEmpty()) binding.emptyStateLayout.visibility =
-            View.VISIBLE else binding.emptyStateLayout.visibility = View.GONE
-        transactionRVAdapter = TransactionRVAdapter(items)
-        binding.transactionRecyclerView.adapter = transactionRVAdapter
+        binding.emptyStateLayout.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+        transactionAdapter.submitList(items)
     }
 
-    fun isOnline(context: Context): Boolean {
+    private fun isOnline(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        if (capabilities != null) {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                return true
-            }
+        return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    }
+
+    private fun setupClearDatabaseButton() {
+        binding.deleteTransactions.setOnClickListener {
+            transactionViewModel.deleteAllTransactions()
         }
-        return false
     }
 }

@@ -5,28 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="@dimen/dimen_16dp"
     tools:context=".presentation.fragment.SignUpFragment">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="1"
+        android:layout_marginBottom="@dimen/dimen_16dp"
         android:contentDescription="@string/sign_in"
+        android:scaleType="center"
         android:src="@drawable/logo_sign_up" />
 
     <TextView
         style="@style/LargeTextView"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="0"
+        android:layout_marginBottom="@dimen/dimen_16dp"
         android:text="@string/sign_up" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="0"
+        android:layout_marginBottom="@dimen/dimen_16dp"
         android:hint="@string/name"
         app:endIconMode="clear_text"
         app:startIconDrawable="@drawable/ic_outline_profile_24">
@@ -45,31 +43,32 @@
         layout="@layout/email_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="0" />
+        android:layout_marginBottom="@dimen/dimen_16dp" />
 
     <include
         android:id="@+id/passwordInputLayout"
         layout="@layout/password_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="1" />
+        android:layout_marginBottom="@dimen/dimen_32dp" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/signUpButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:text="@string/sign_up"
-        android:textSize="24sp" />
+        android:textSize="@dimen/dimen_24sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/signInTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="0"
         android:orientation="horizontal">
 
         <TextView

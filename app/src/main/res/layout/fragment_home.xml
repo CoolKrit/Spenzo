@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingStart="@dimen/dimen_16dp"
+    android:paddingTop="@dimen/dimen_16dp"
+    android:paddingEnd="@dimen/dimen_16dp"
     tools:context=".presentation.fragment.HomeFragment">
 
     <TextView
@@ -16,10 +18,10 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/dimen_16dp"
         android:backgroundTint="?attr/colorSurfaceContainerHigh"
-        app:cardCornerRadius="24dp"
-        app:strokeWidth="0dp">
+        app:cardCornerRadius="@dimen/dimen_24dp"
+        app:strokeWidth="@dimen/dimen_0dp">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
@@ -34,19 +36,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="@dimen/dimen_8dp"
+        android:layout_marginBottom="@dimen/dimen_16dp"
         android:gravity="start"
         android:orientation="horizontal">
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/dimen_8dp"
             android:layout_weight="1"
             android:backgroundTint="?attr/colorSurfaceContainer"
-            app:cardCornerRadius="24dp"
-            app:strokeWidth="0dp">
+            app:cardCornerRadius="@dimen/dimen_24dp"
+            app:strokeWidth="@dimen/dimen_0dp">
 
             <Spinner
                 android:id="@+id/categorySpinner"
@@ -57,12 +59,12 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="?attr/colorSurfaceContainer"
-            app:cardCornerRadius="24dp"
-            app:strokeWidth="0dp">
+            app:cardCornerRadius="@dimen/dimen_24dp"
+            app:strokeWidth="@dimen/dimen_0dp">
 
             <Spinner
                 android:id="@+id/typeSpinner"
@@ -74,19 +76,17 @@
 
     </LinearLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <Button
+        android:id="@+id/deleteTransactions"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:layout_height="wrap_content" />
 
-        <ViewStub
-            android:id="@+id/emptyStateLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout="@layout/content_empty_state_layout"
-            android:visibility="gone" />
-
-    </androidx.core.widget.NestedScrollView>
+    <ViewStub
+        android:id="@+id/emptyStateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/content_empty_state_layout"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/transactionRecyclerView"

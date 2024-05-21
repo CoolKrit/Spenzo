@@ -1,4 +1,4 @@
-package com.example.spenzo.util
+package com.example.spenzo
 
 object Constants {
     val transactionType = listOf("Income", "Expense")

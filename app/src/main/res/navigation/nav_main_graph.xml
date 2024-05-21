@@ -9,10 +9,35 @@
         android:id="@+id/homeFragment"
         android:name="com.example.spenzo.presentation.fragment.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_transactionDetailsFragment"
+            app:destination="@id/transactionDetailsFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/addTransactionFragment2"
+        android:id="@+id/addTransactionFragment"
         android:name="com.example.spenzo.presentation.fragment.AddTransactionFragment"
         android:label="fragment_add_transaction"
         tools:layout="@layout/fragment_add_transaction" />
+    <fragment
+        android:id="@+id/transactionDetailsFragment"
+        android:name="com.example.spenzo.presentation.fragment.TransactionDetailsFragment"
+        android:label="fragment_transaction_details"
+        tools:layout="@layout/fragment_transaction_details" >
+        <argument
+            android:name="transaction"
+            app:argType="com.example.spenzo.data.model.Transaction" />
+        <action
+            android:id="@+id/action_transactionDetailsFragment_to_editTransactionFragment"
+            app:destination="@id/editTransactionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editTransactionFragment"
+        android:name="com.example.spenzo.presentation.fragment.EditTransactionFragment"
+        android:label="fragment_edit_transaction"
+        tools:layout="@layout/fragment_edit_transaction" >
+        <argument
+            android:name="transaction"
+            app:argType="com.example.spenzo.data.model.Transaction" />
+    </fragment>
 </navigation>
