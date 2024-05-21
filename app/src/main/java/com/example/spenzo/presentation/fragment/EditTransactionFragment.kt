@@ -7,32 +7,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.spenzo.Constants
 import com.example.spenzo.R
 import com.example.spenzo.data.model.Transaction
-import com.example.spenzo.databinding.FragmentAddTransactionBinding
+import com.example.spenzo.databinding.FragmentEditTransactionBinding
 import com.example.spenzo.presentation.viewmodel.TransactionViewModel
 import com.example.spenzo.presentation.viewmodel.TransactionViewModelFactory
 import java.util.Calendar
-import java.util.Date
-import java.util.UUID
 
-class AddTransactionFragment : Fragment() {
+class EditTransactionFragment : Fragment() {
 
-    private var _binding: FragmentAddTransactionBinding? = null
+    private var _binding: FragmentEditTransactionBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var transactionViewModel: TransactionViewModel
+    private lateinit var transaction: Transaction
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        _binding = FragmentAddTransactionBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentEditTransactionBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -43,6 +40,10 @@ class AddTransactionFragment : Fragment() {
             this,
             TransactionViewModelFactory(requireActivity().application)
         )[TransactionViewModel::class.java]
+
+        transaction = arguments?.let {
+            EditTransactionFragmentArgs.fromBundle(it).transaction
+        } ?: throw IllegalArgumentException("Transaction must be passed to EditTransactionFragment")
 
         initViews()
     }
@@ -60,6 +61,13 @@ class AddTransactionFragment : Fragment() {
         )
 
         with(binding) {
+            transactionTitleLayout.transactionTitleLayout.hint = transaction.title
+            transactionAmountLayout.transactionAmountLayout.hint = transaction.amount.toString()
+            transactionCategoryLayout.transactionCategoryLayout.hint = transaction.category
+            transactionTypeLayout.transactionTypeLayout.hint = transaction.type
+            transactionDateLayout.transactionDateLayout.hint = transaction.date
+            transactionNoteLayout.transactionNoteLayout.hint = transaction.note
+
             transactionCategoryLayout.categoryInputEditText.setAdapter(categoryAdapter)
             transactionTypeLayout.typeInputEditText.setAdapter(typeAdapter)
 
@@ -72,8 +80,8 @@ class AddTransactionFragment : Fragment() {
                 val datePickerDialog = DatePickerDialog(
                     requireContext(),
                     { _, year, monthOfYear, dayOfMonth ->
-                        val dat = (dayOfMonth.toString() + "/" + (monthOfYear + 1) + "/" + year)
-                        binding.transactionDateLayout.dateInputEditText.setText(dat)
+                        val date = "$dayOfMonth/${monthOfYear + 1}/$year"
+                        transactionDateLayout.dateInputEditText.setText(date)
                     },
                     year,
                     month,
@@ -83,41 +91,41 @@ class AddTransactionFragment : Fragment() {
             }
 
             saveTransactionButton.setOnClickListener {
-                val transaction = getTransactionContent()
+                val updatedTransaction = getTransactionContent()
 
                 when {
-                    transaction.title.isEmpty() -> {
+                    updatedTransaction.title.isEmpty() -> {
                         this.transactionTitleLayout.titleInputEditText.error =
                             "Title must not be empty"
                     }
 
-                    transaction.amount.isNaN() -> {
+                    updatedTransaction.amount.isNaN() -> {
                         this.transactionAmountLayout.amountInputEditText.error =
                             "Amount must not be empty"
                     }
 
-                    transaction.type.isEmpty() -> {
+                    updatedTransaction.type.isEmpty() -> {
                         this.transactionTypeLayout.typeInputEditText.error =
                             "Transaction type must not be empty"
                     }
 
-                    transaction.category.isEmpty() -> {
+                    updatedTransaction.category.isEmpty() -> {
                         this.transactionCategoryLayout.categoryInputEditText.error =
                             "Tag must not be empty"
                     }
 
-                    transaction.date.isEmpty() -> {
+                    updatedTransaction.date.isEmpty() -> {
                         this.transactionDateLayout.dateInputEditText.error =
                             "Date must not be empty"
                     }
 
-                    transaction.note.isEmpty() -> {
+                    updatedTransaction.note.isEmpty() -> {
                         this.transactionNoteLayout.noteInputEditText.error =
                             "Note must not be empty"
                     }
 
                     else -> {
-                        transactionViewModel.addTransaction(transaction)
+                        transactionViewModel.updateTransaction(updatedTransaction)
                         findNavController().navigateUp()
                     }
                 }
@@ -126,7 +134,7 @@ class AddTransactionFragment : Fragment() {
     }
 
     private fun getTransactionContent(): Transaction = binding.let {
-        val id = Date().toString()
+        val id = transaction.id
         val title = it.transactionTitleLayout.titleInputEditText.text.toString()
         val amount = if (it.transactionAmountLayout.amountInputEditText.text.toString()
                 .isEmpty()

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_16dp"
+    tools:context=".presentation.fragment.TransactionDetailsFragment">
+
+    <TextView
+        style="@style/LargeTextView"
+        android:layout_marginBottom="@dimen/dimen_32dp"
+        android:text="@string/transaction_details" />
+
+    <TextView
+        style="@style/SmallTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title" />
+
+    <TextView
+        android:id="@+id/transactionTitle"
+        style="@style/MediumTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:text="@string/example_text"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        style="@style/SmallTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/amount" />
+
+    <TextView
+        android:id="@+id/transactionCategory"
+        style="@style/MediumTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:text="@string/example_text"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        style="@style/SmallTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/category" />
+
+    <TextView
+        android:id="@+id/transactionType"
+        style="@style/MediumTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:text="@string/example_text"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        style="@style/SmallTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/type" />
+
+    <TextView
+        android:id="@+id/transactionAmount"
+        style="@style/MediumTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:text="@string/example_text"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        style="@style/SmallTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date" />
+
+    <TextView
+        android:id="@+id/transactionDate"
+        style="@style/MediumTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:text="@string/example_text"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        style="@style/SmallTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/note" />
+
+    <TextView
+        android:id="@+id/transactionNote"
+        style="@style/MediumTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp"
+        android:text="@string/example_text"
+        android:textColor="?attr/colorOnSurface" />
+
+    <Button
+        android:id="@+id/transactionEditButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/MediumTextView"
+        android:layout_gravity="end"
+        android:text="@string/edit" />
+
+</LinearLayout>

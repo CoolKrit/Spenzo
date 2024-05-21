@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/transactionDateLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="@string/email"
-    app:endIconMode="clear_text"
-    app:startIconDrawable="@drawable/ic_outline_email_24">
+    android:hint="@string/date"
+    app:startIconDrawable="@drawable/ic_date">
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/emailInputEditText"
-        android:layout_width="match_parent"
+        android:id="@+id/dateInputEditText"
         style="@style/MediumTextView"
-        android:inputType="textEmailAddress" />
+        android:layout_width="match_parent"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
 </com.google.android.material.textfield.TextInputLayout>

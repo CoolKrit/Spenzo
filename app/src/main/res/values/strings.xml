@@ -16,6 +16,18 @@
     <string name="hi_user">Hi, User!</string>
     <string name="search">Search</string>
     <string name="there_are_no_transactions">There are no transactions</string>
+    <string name="add_transaction">Add Transaction</string>
+    <string name="title">Title</string>
+    <string name="amount">Amount</string>
+    <string name="category">Category</string>
+    <string name="type">Type</string>
+    <string name="note">Note</string>
+    <string name="date">Date</string>
+    <string name="save">Save</string>
+    <string name="transaction_details">Transaction Details</string>
+    <string name="example_text">Example Text</string>
+    <string name="edit">Edit</string>
+    <string name="edit_transaction">Edit Transaction</string>
 
     <string-array name="spinner_transactionCategories">
         <item>All</item>
