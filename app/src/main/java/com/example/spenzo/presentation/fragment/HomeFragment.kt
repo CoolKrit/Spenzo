@@ -1,6 +1,7 @@
 package com.example.spenzo.presentation.fragment
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -10,18 +11,23 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.annotation.ArrayRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.spenzo.R
 import com.example.spenzo.data.model.Transaction
 import com.example.spenzo.databinding.FragmentHomeBinding
+import com.example.spenzo.presentation.activity.MainActivity.Companion.CURRENCY
+import com.example.spenzo.presentation.activity.MainActivity.Companion.SETTINGS
 import com.example.spenzo.presentation.adapter.TransactionAdapter
 import com.example.spenzo.presentation.viewmodel.TransactionViewModel
 import com.example.spenzo.presentation.viewmodel.TransactionViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
 
@@ -30,6 +36,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var transactionViewModel: TransactionViewModel
     private lateinit var transactionAdapter: TransactionAdapter
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +50,14 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sharedPreferences = requireContext().getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
+        sharedPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == CURRENCY) {
+                transactionAdapter.notifyDataSetChanged()
+            }
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
+
         setupRecyclerView()
         setupObservers()
         setupSpinners()
@@ -51,18 +67,45 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener)
         _binding = null
     }
 
     private fun setupRecyclerView() {
-        transactionAdapter = TransactionAdapter{ transaction ->
-            val action = HomeFragmentDirections.actionHomeFragmentToTransactionDetailsFragment(transaction)
+        transactionAdapter = TransactionAdapter { transaction ->
+            val action =
+                HomeFragmentDirections.actionHomeFragmentToTransactionDetailsFragment(transaction)
             findNavController().navigate(action)
         }
         binding.transactionRecyclerView.apply {
             adapter = transactionAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+
+        val itemTouchHelperCallback =
+            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    val transaction = transactionAdapter.currentList[position]
+                    transactionViewModel.deleteTransaction(transaction)
+
+                    Snackbar.make(binding.root, "Transaction deleted", Snackbar.LENGTH_LONG)
+                        .setAction("Undo") {
+                            transactionViewModel.addTransaction(transaction)
+                        }.show()
+                }
+            }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.transactionRecyclerView)
     }
 
     private fun setupObservers() {
@@ -70,9 +113,16 @@ class HomeFragment : Fragment() {
             this,
             TransactionViewModelFactory(requireActivity().application)
         )[TransactionViewModel::class.java]
+
         transactionViewModel.transactions.observe(viewLifecycleOwner) { items ->
             updateRecyclerView(items)
         }
+
+        transactionViewModel.userName.observe(viewLifecycleOwner) { name ->
+            binding.userNameTextView.text = "Hi, $name!"
+        }
+
+        transactionViewModel.loadUserName()
     }
 
     private fun setupSearchView() {

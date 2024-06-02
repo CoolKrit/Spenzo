@@ -2,6 +2,7 @@ package com.example.spenzo.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -19,6 +20,9 @@ interface TransactionDao {
 
     @Query("SELECT * FROM transactions ORDER BY id DESC")
     fun getAllTransactions(): LiveData<List<Transaction>>
+
+    @Delete
+    suspend fun deleteTransaction(transaction: Transaction)
 
     @Query("DELETE FROM transactions")
     suspend fun deleteAllTransactions()

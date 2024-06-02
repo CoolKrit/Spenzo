@@ -1,7 +1,11 @@
 package com.example.spenzo.presentation.adapter
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,6 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.spenzo.R
 import com.example.spenzo.data.model.Transaction
 import com.example.spenzo.databinding.ItemTransactionBinding
+import com.example.spenzo.presentation.activity.MainActivity
+import com.example.spenzo.presentation.activity.MainActivity.Companion.CURRENCY
+import com.example.spenzo.presentation.activity.MainActivity.Companion.SETTINGS
+import java.text.NumberFormat
+import java.util.Locale
 
 class TransactionAdapter(private val onClick: (Transaction) -> Unit) : ListAdapter<Transaction, TransactionAdapter.ItemViewHolder>(TransactionDiffCallback()) {
 
@@ -25,10 +34,19 @@ class TransactionAdapter(private val onClick: (Transaction) -> Unit) : ListAdapt
         }
     }
 
-    class ItemViewHolder(private val binding: ItemTransactionBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ItemViewHolder(private val binding: ItemTransactionBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Transaction) {
             binding.transactionTitle.text = item.title
             binding.transactionCategory.text = item.category
+
+            val context = binding.transactionAmount.context
+            val sharedPreferences = context.getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
+            val currency = when (sharedPreferences.getString(CURRENCY, "USD")) {
+                "USD" -> "$"
+                "EUR" -> "€"
+                "RUB" -> "₽"
+                else -> "$"
+            }
 
             val colorRes = when (item.type) {
                 "Income" -> R.color.income
@@ -37,8 +55,14 @@ class TransactionAdapter(private val onClick: (Transaction) -> Unit) : ListAdapt
             }
 
             binding.transactionAmount.setTextColor(ContextCompat.getColor(binding.transactionAmount.context, colorRes))
-            val amountText = if (item.type == "Income") "+${item.amount}" else "-${item.amount}"
+            val formattedAmount = formatNumber(item.amount)
+            val amountText = if (item.type == "Income") "+$currency${formattedAmount}" else "-$currency${formattedAmount}"
             binding.transactionAmount.text = amountText
+        }
+
+        private fun formatNumber(number: Double): String {
+            val numberFormat = NumberFormat.getNumberInstance(Locale.US)
+            return numberFormat.format(number)
         }
     }
 

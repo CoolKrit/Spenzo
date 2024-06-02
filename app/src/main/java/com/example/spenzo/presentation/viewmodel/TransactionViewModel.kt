@@ -2,109 +2,129 @@ package com.example.spenzo.presentation.viewmodel
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.spenzo.domain.repositories.TransactionRepository
 import com.example.spenzo.data.db.TransactionDatabase
 import com.example.spenzo.data.model.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
-import java.lang.reflect.Type
 
 class TransactionViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val transactionDao = TransactionDatabase.getDatabase(application).transactionDao()
-    private val firebaseAuth = FirebaseAuth.getInstance()
-    private val firebaseStore = FirebaseFirestore.getInstance()
-
-    private val itemsCollection = firebaseStore.collection("users")
-        .document(firebaseAuth.currentUser!!.uid)
-        .collection("transactions")
+    private val transactionRepository: TransactionRepository
 
     private val _transactions = MutableLiveData<List<Transaction>>()
     val transactions: LiveData<List<Transaction>> get() = _transactions
 
+    private val _userName = MutableLiveData<String>()
+    val userName: LiveData<String> get() = _userName
+
+    private val _maxEarned = MutableLiveData<Double>()
+    val maxEarned: LiveData<Double> get() = _maxEarned
+
+    private val _maxSpent = MutableLiveData<Double>()
+    val maxSpent: LiveData<Double> get() = _maxSpent
+
+    private val _balance = MutableLiveData<Double>()
+    val balance: LiveData<Double> get() = _balance
+
+    private val preferences = application.getSharedPreferences("transaction_prefs", Context.MODE_PRIVATE)
+    private val currentIdKey = "current_id"
+
+    init {
+        val transactionDao = TransactionDatabase.getDatabase(application).transactionDao()
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseStore = FirebaseFirestore.getInstance()
+        transactionRepository = TransactionRepository(transactionDao, firebaseStore, firebaseAuth)
+
+        transactionRepository.getTransactions().observeForever { transactions ->
+            _transactions.postValue(transactions)
+            updateStats(transactions)
+        }
+    }
+
+    fun loadUserName() {
+        transactionRepository.loadUserName(
+            onSuccess = { name -> _userName.postValue(name) },
+            onFailure = { _userName.postValue("User") }
+        )
+    }
+
     fun addTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            transactionDao.insertTransaction(transaction)
-            saveToFirestore(transaction)
+            val newId = getNextId()
+            val newTransaction = transaction.copy(id = if (transaction.id.isNullOrEmpty()) newId.toString() else transaction.id)
+            transactionRepository.insertTransaction(newTransaction)
+            _transactions.value = _transactions.value?.plus(newTransaction)
         }
+    }
+
+    private fun getNextId(): Int {
+        val currentId = preferences.getInt(currentIdKey, 0)
+        val nextId = currentId + 1
+        preferences.edit().putInt(currentIdKey, nextId).apply()
+        return nextId
     }
 
     fun updateTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            Log.e("TAG", "updateTransaction: HERE!")
-            updateInFirestore(transaction)
-            transactionDao.updateTransaction(transaction)
+            transactionRepository.updateTransaction(transaction)
         }
     }
 
-    private fun updateInFirestore(transaction: Transaction) {
-        Log.e("TAG", "updateInFirestore: HERE!")
-        itemsCollection.document(transaction.id).set(transaction)
-    }
-
-    private fun saveToFirestore(transaction: Transaction) {
-        itemsCollection.document(transaction.id).set(transaction)
-    }
-
-    fun loadItems(query: String, category: String?, type: String?, isOnline: Boolean) {
-        if (isOnline) {
-            fetchItemsFromServer(query, category, type)
-        } else {
-            loadItemsLocally(query, category, type)
-        }
-    }
-
-    private fun fetchItemsFromServer(query: String, category: String?, type: String?) {
-        var queryRef: Query = itemsCollection
-
-        if (query.isNotEmpty()) queryRef = queryRef.whereEqualTo("title", query)
-        if (!category.isNullOrEmpty()) queryRef = queryRef.whereEqualTo("category", category)
-        if (!type.isNullOrEmpty()) queryRef = queryRef.whereEqualTo("type", type)
-
-        queryRef.orderBy("id", Query.Direction.DESCENDING).get()
-            .addOnSuccessListener { querySnapshot ->
-                val itemsList =
-                    querySnapshot.documents.mapNotNull { it.toObject(Transaction::class.java) }
-                saveItemsLocally(itemsList)
-                _transactions.postValue(itemsList)
-            }
-            .addOnFailureListener {
-                loadItemsLocally(query, category, type)
-            }
-    }
-
-    private fun saveItemsLocally(items: List<Transaction>) {
+    fun deleteTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            items.forEach { transactionDao.insertTransaction(it) }
-        }
-    }
-
-    private fun loadItemsLocally(query: String, category: String?, type: String?) {
-        transactionDao.getAllTransactions().observeForever { itemsList ->
-            val filteredItems = itemsList.filter { transaction ->
-                val matchesQuery =
-                    query.isEmpty() || transaction.title.contains(query, ignoreCase = true)
-                val matchesCategory = category.isNullOrEmpty() || transaction.category == category
-                val matchesType = type.isNullOrEmpty() || transaction.type == type
-                matchesQuery && matchesCategory && matchesType
-            }
-            _transactions.postValue(filteredItems)
+            transactionRepository.deleteTransaction(transaction)
+            _transactions.value = _transactions.value?.filter { it.id != transaction.id }
         }
     }
 
     fun deleteAllTransactions() {
         viewModelScope.launch {
-            transactionDao.deleteAllTransactions()
+            transactionRepository.deleteAllTransactions()
         }
+    }
+
+    fun loadItems(query: String, category: String?, type: String?, isOnline: Boolean) {
+        if (isOnline) {
+            transactionRepository.loadItemsFromServer(query, category, type,
+                onSuccess = { items ->
+                    _transactions.postValue(items)
+                    updateStats(items)
+                },
+                onFailure = {
+                    loadItemsLocally(query, category, type)
+                }
+            )
+        } else {
+            loadItemsLocally(query, category, type)
+        }
+    }
+
+    private fun loadItemsLocally(query: String, category: String?, type: String?) {
+        transactionRepository.getTransactions().observeForever { itemsList ->
+            val filteredItems = itemsList.filter { transaction ->
+                val matchesQuery = query.isEmpty() || transaction.title.contains(query, ignoreCase = true)
+                val matchesCategory = category.isNullOrEmpty() || transaction.category == category
+                val matchesType = type.isNullOrEmpty() || transaction.type == type
+                matchesQuery && matchesCategory && matchesType
+            }
+            _transactions.postValue(filteredItems)
+            updateStats(filteredItems)
+        }
+    }
+
+    private fun updateStats(items: List<Transaction>) {
+        val maxEarned = items.filter { it.type == "Income" }.sumOf { it.amount }
+        val maxSpent = items.filter { it.type == "Expense" }.sumOf { it.amount }
+        val balance = maxEarned - maxSpent
+
+        _maxEarned.postValue(maxEarned)
+        _maxSpent.postValue(maxSpent)
+        _balance.postValue(balance)
     }
 }

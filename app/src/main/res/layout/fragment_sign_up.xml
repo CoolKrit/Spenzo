@@ -27,7 +27,7 @@
         android:layout_marginBottom="@dimen/dimen_16dp"
         android:hint="@string/name"
         app:endIconMode="clear_text"
-        app:startIconDrawable="@drawable/ic_outline_profile_24">
+        app:startIconDrawable="@drawable/ic_profile">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameInputEditText"
@@ -54,8 +54,8 @@
 
     <Button
         android:id="@+id/signUpButton"
+        style="@style/MediumTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="@string/sign_up"
         android:textSize="@dimen/dimen_24sp" />
 

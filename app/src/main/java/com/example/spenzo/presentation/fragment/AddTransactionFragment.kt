@@ -126,7 +126,7 @@ class AddTransactionFragment : Fragment() {
     }
 
     private fun getTransactionContent(): Transaction = binding.let {
-        val id = Date().toString()
+        val id = ""
         val title = it.transactionTitleLayout.titleInputEditText.text.toString()
         val amount = if (it.transactionAmountLayout.amountInputEditText.text.toString()
                 .isEmpty()
