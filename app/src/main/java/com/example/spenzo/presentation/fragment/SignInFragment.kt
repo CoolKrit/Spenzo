@@ -48,14 +48,6 @@ class SignInFragment : Fragment(), SignInListener {
         binding.signUpTextView.setOnClickListener { findNavController().navigate(R.id.signUpFragment) }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        if (FirebaseAuth.getInstance().currentUser != null) {
-            onSignInSuccess()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

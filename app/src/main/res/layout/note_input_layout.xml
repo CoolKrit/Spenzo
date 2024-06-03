@@ -9,7 +9,7 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/noteInputEditText"
-        style="@style/MediumTextView"
+        style="@style/SmallTextView"
         android:layout_width="match_parent"
         android:inputType="text" />
 

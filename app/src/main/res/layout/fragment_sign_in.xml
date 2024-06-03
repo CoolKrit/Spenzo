@@ -42,11 +42,10 @@
 
     <Button
         android:id="@+id/signInButton"
+        style="@style/MediumTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_32dp"
-        android:text="@string/sign_in"
-        android:textSize="@dimen/dimen_24sp" />
+        android:text="@string/sign_in" />
 
     <View
         android:layout_width="match_parent"

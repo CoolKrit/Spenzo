@@ -10,7 +10,7 @@
 
     <AutoCompleteTextView
         android:id="@+id/typeInputEditText"
-        style="@style/MediumTextView"
+        style="@style/SmallTextView"
         android:layout_width="match_parent"
         android:inputType="none"
         android:labelFor="@id/typeInputEditText" />

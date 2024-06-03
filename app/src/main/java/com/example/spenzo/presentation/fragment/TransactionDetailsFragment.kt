@@ -36,6 +36,9 @@ class TransactionDetailsFragment : Fragment() {
             binding.transactionDate.text = it.date
             binding.transactionNote.text = it.note
 
+            binding.transactionBack.setOnClickListener {
+                findNavController().navigateUp()
+            }
 
             binding.transactionEditButton.setOnClickListener { _ ->
                 val action = TransactionDetailsFragmentDirections.actionTransactionDetailsFragmentToEditTransactionFragment(it)
