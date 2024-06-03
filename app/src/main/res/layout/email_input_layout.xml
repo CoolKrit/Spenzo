@@ -5,13 +5,12 @@
     android:layout_height="wrap_content"
     android:hint="@string/email"
     app:endIconMode="clear_text"
-    app:startIconDrawable="@drawable/ic_outline_email_24">
+    app:startIconDrawable="@drawable/ic_email">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/emailInputEditText"
+        style="@style/SmallTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/lexend_medium"
         android:inputType="textEmailAddress" />
 
 </com.google.android.material.textfield.TextInputLayout>

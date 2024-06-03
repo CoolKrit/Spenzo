@@ -7,23 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.spenzo.R
 import com.example.spenzo.databinding.FragmentSignUpBinding
-import com.example.spenzo.domain.SignInListener
-import com.example.spenzo.domain.SignUpListener
+import com.example.spenzo.domain.listener.SignUpListener
 import com.example.spenzo.presentation.viewmodel.SignInUpViewModel
 
 class SignUpFragment : Fragment(), SignUpListener {
+
     private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var signInUpViewModel: SignInUpViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val signInUpViewModel: SignInUpViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +31,7 @@ class SignUpFragment : Fragment(), SignUpListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        signInUpViewModel = ViewModelProvider(this)[SignInUpViewModel::class.java]
+
         signInUpViewModel.signUpListener = this
 
         binding.signUpButton.setOnClickListener {
@@ -49,37 +45,9 @@ class SignUpFragment : Fragment(), SignUpListener {
         binding.signInTextView.setOnClickListener { findNavController().popBackStack() }
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun validateData(userName: String, userEmail: String, userPassword: String): Boolean {

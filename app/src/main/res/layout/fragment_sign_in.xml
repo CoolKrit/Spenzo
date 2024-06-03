@@ -4,20 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="@dimen/dimen_16dp"
     tools:context=".presentation.fragment.SignInFragment">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="1"
+        android:layout_marginBottom="@dimen/dimen_16dp"
         android:contentDescription="@string/sign_in"
+        android:scaleType="center"
         android:src="@drawable/logo_sign_in" />
 
     <TextView
         style="@style/LargeTextView"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/dimen_16dp"
         android:layout_weight="0"
         android:text="@string/sign_in" />
 
@@ -26,27 +26,31 @@
         layout="@layout/email_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/dimen_16dp" />
 
     <include
         android:id="@+id/passwordInputLayout"
         layout="@layout/password_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="@dimen/dimen_16dp" />
 
     <TextView
         style="@style/SmallTextView"
         android:layout_gravity="end"
-        android:layout_weight="1"
         android:text="@string/forgot_password" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/signInButton"
+        style="@style/MediumTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_in"
-        android:textSize="24sp" />
+        android:layout_marginTop="@dimen/dimen_32dp"
+        android:text="@string/sign_in" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/signUpTextView"

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/dimen_16dp"
+    android:paddingEnd="@dimen/dimen_16dp"
+    android:scrollbars="none"
+    tools:context=".presentation.fragment.AddTransactionFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/LargeTextView"
+            android:layout_marginTop="@dimen/dimen_16dp"
+            android:layout_marginBottom="@dimen/dimen_32dp"
+            android:text="@string/add_transaction" />
+
+        <include
+            android:id="@+id/transactionTitleLayout"
+            layout="@layout/title_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp" />
+
+        <include
+            android:id="@+id/transactionAmountLayout"
+            layout="@layout/amount_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp" />
+
+        <include
+            android:id="@+id/transactionCategoryLayout"
+            layout="@layout/category_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp" />
+
+        <include
+            android:id="@+id/transactionTypeLayout"
+            layout="@layout/type_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp" />
+
+        <include
+            android:id="@+id/transactionDateLayout"
+            layout="@layout/date_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp" />
+
+        <include
+            android:id="@+id/transactionNoteLayout"
+            layout="@layout/note_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_32dp" />
+
+        <Button
+            android:id="@+id/saveTransactionButton"
+            style="@style/MediumTextView"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:text="@string/save" />
+
+    </LinearLayout>
+
+</ScrollView>

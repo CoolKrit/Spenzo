@@ -1,4 +1,4 @@
-package com.example.spenzo.domain
+package com.example.spenzo.domain.listener
 
 interface SignInListener {
     fun onSignInSuccess()

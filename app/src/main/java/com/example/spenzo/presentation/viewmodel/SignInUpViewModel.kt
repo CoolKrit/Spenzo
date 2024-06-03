@@ -1,8 +1,8 @@
 package com.example.spenzo.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.spenzo.domain.SignInListener
-import com.example.spenzo.domain.SignUpListener
+import com.example.spenzo.domain.listener.SignInListener
+import com.example.spenzo.domain.listener.SignUpListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

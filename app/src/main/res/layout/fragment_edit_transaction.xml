@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_16dp"
+    tools:context=".presentation.fragment.EditTransactionFragment">
+
+    <TextView
+        style="@style/LargeTextView"
+        android:layout_marginBottom="@dimen/dimen_32dp"
+        android:text="@string/edit_transaction" />
+
+    <include
+        android:id="@+id/transactionTitleLayout"
+        layout="@layout/title_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp" />
+
+    <include
+        android:id="@+id/transactionAmountLayout"
+        layout="@layout/amount_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp" />
+
+    <include
+        android:id="@+id/transactionCategoryLayout"
+        layout="@layout/category_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp" />
+
+    <include
+        android:id="@+id/transactionTypeLayout"
+        layout="@layout/type_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp" />
+
+    <include
+        android:id="@+id/transactionDateLayout"
+        layout="@layout/date_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_16dp" />
+
+    <include
+        android:id="@+id/transactionNoteLayout"
+        layout="@layout/note_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_32dp" />
+
+    <Button
+        android:id="@+id/saveTransactionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:textSize="@dimen/dimen_24sp" />
+
+</LinearLayout>
